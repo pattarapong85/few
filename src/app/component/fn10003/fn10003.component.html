@@ -1,0 +1,287 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN10003 : หน้าสินค้า">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="card">
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <button pButton pRipple label="เพิ่มใหม่" icon="pi pi-plus"
+                                        class="p-button-success p-mr-2" (click)="openNew()"></button>
+                                    <button pButton pRipple label="ลบ" icon="pi pi-trash" class="p-button-danger"
+                                        (click)="deleteSelected()"
+                                        [disabled]="!selectedRows || !selectedRows.length"></button>
+                                </ng-template>
+
+                                <ng-template pTemplate="right">
+                                    <!-- <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="openUpload()"></button>   -->
+                                    <p-fileUpload #fileUpload mode="basic" accept=".csv" cancelLabel="xxx" customUpload="true" [maxFileSize]="1000000" label="Import xxx" chooseLabel="Import CSV" class="p-mr-2 p-d-inline-block" (onSelect)="changeListener($event)" ></p-fileUpload>
+                                    <button pButton pRipple label="Upload" icon="pi pi-upload" class="p-button-help" (click)="onUpload($event)"></button>
+                                    <a href="assets/uploadProductCSV.csv" icon="pi pi-upload" class="p-button-help">Download CSV</a>
+                                        
+                                </ng-template>
+                            </p-toolbar>
+                            <!-- <p-fileUpload name="demo[]" (onUpload)="onUpload($event)" (onSelect)="changeListener($event)"
+                                             accept=".csv" maxFileSize="1000000">
+                                    </p-fileUpload> -->
+                            <p-table #dt [columns]="cols" [value]="dataTable" [paginator]="true"
+                                [globalFilterFields]="['TYPE_SHOW','CATEGORY','PRODUCT_SKU','PRICE','REMARK','FLAG','CREATE_DATE_FMT','CREATE_BY']"
+                                [(selection)]="selectedRows" [rowHover]="true" dataKey="KEY"
+                                [rowsPerPageOptions]="[10,20,30]" [rows]="10"
+                                currentPageReportTemplate="แสดง {first} ถึง {last} จากทั้งหมด {totalRecords} รายการ"
+                                [showCurrentPageReport]="true">
+                                <ng-template pTemplate="caption">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        <!-- <h5 class="p-m-0">Manage Products</h5> -->
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText type="text"
+                                                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                                placeholder="ค้นหา..." />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th style="width: 3rem">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                            {{col.header}}
+                                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                    <tr>
+                                        <td>
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td *ngFor="let col of columns">
+                                            {{rowData[col.field]}}
+                                        </td>
+                                        <td>
+                                            <button pButton pRipple icon="pi pi-pencil"
+                                                class="p-button-rounded p-button-success p-mr-2"
+                                                (click)="edit(rowData)"></button>
+                                            <button pButton pRipple icon="pi pi-trash"
+                                                class="p-button-rounded p-button-warning"
+                                                (click)="delete(rowData)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        จำนวน {{dataTable ? dataTable.length : 0 }} รายการ.
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(visible)]="fncDialog" [style]="{width: '1100px'}" header="รายละเอียดสินค้า" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <p-panel header="รายละเอียดสินค้า">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="status">ประเภทสินค้า</label>
+                    <div class="p-formgroup-inline">
+                        <div class="p-field-checkbox">
+                            <p-radioButton name="type7" value="NOR" [(ngModel)]="newRow.TYPE" inputId="nor" (onClick)="onClickType($event)"></p-radioButton>
+                            <label for="nor">สินค้าทั่วไป</label>
+                        </div>
+                        <div class="p-field-checkbox">
+                            <p-radioButton name="type8" value="SPC" [(ngModel)]="newRow.TYPE" inputId="spc" (onClick)="onClickType($event)"></p-radioButton>
+                            <label for="spc">สินค้าตัวเลือก</label>
+                        </div>
+                        <div class="p-field-checkbox">
+                            <p-radioButton name="type9" value="SET" [(ngModel)]="newRow.TYPE" inputId="set" (onClick)="onClickType($event)"></p-radioButton>
+                            <label for="set">สินค้าจัดเซต</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-field  p-col-12 p-md-6">
+                    <label for="status">สถานะ</label>
+                    <p-dropdown [options]="statusList" [(ngModel)]="newRow.ACTIVE_FLAG" placeholder="เลือกสถานะ"
+                        [showClear]="true"></p-dropdown>
+                    <small class="p-invalid" *ngIf="submitted && !newRow.ACTIVE_FLAG">ต้องเลือกสถานะด้วย</small>
+                </div>
+                <div class="p-field  p-col-12 p-md-6">
+                    <label for="category">เลือกหมวดหมู่</label>
+                    <p-dropdown [options]="categoryList" [(ngModel)]="newRow.CATEGORY" placeholder="เลือกหมวดหมู่"
+                        [showClear]="true"></p-dropdown>
+                    <small class="p-invalid" *ngIf="submitted && !newRow.CATEGORY">ต้องเลือกหมวดหมู่</small>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="sku">รหัสสินค้า</label>
+                    <input type="text" pInputText id="sku" [(ngModel)]="newRow.PRODUCT_SKU" required autofocus [readonly]="flagPrimaryKey"/>
+                    <small class="p-invalid" *ngIf="submitted && !newRow.PRODUCT_SKU">รหัสสินค้าต้องใส่</small>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="productName">ชื่อสินค้า</label>
+                    <input type="text" pInputText id="productName" [(ngModel)]="newRow.NAME" required/>
+                    <small class="p-invalid" *ngIf="submitted && !newRow.NAME">ชื่อสินค้าต้องใส่</small>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="brand">แบรนด์ สินค้า</label>
+                    <input type="text" pInputText id="brand" [(ngModel)]="newRow.BRAND"/>
+                </div>
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="status">เลือกยูนิต</label>
+                    <p-dropdown [options]="unitList" [(ngModel)]="newRow.UNIT" placeholder="เลือกยูนิต"
+                        [showClear]="true"></p-dropdown>
+                    <small class="p-invalid" *ngIf="submitted && !newRow.UNIT">ต้องเลือกยูนิต</small>
+                </div>
+            </div>
+        </p-panel>
+        <br/>
+        <p-panel header="ลักษณะสินค้า" [toggleable]="true" [collapsed]="true">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field  p-col-12 p-md-6">
+                    <label for="weight">น้ำหนัก</label>
+                    <p-inputNumber inputId="weight" [(ngModel)]="newRow.WEIGHT" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field  p-col-12 p-md-6">
+                    <label for="long">ยาว</label>
+                    <p-inputNumber inputId="long" [(ngModel)]="newRow.LONG" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field  p-col-12 p-md-6">
+                    <label for="wide">กว้าง</label>
+                    <p-inputNumber inputId="wide" [(ngModel)]="newRow.WIDE" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="height">สูง</label>
+                    <p-inputNumber inputId="height" [(ngModel)]="newRow.HEIGHT" ></p-inputNumber>
+                </div>
+            </div>
+        </p-panel>
+        <br>
+        <p-panel header="คำอธิบายสินค้า" [toggleable]="true" [collapsed]="true">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="name">อัพโหลดรูป</label>
+                    <p-fileUpload name="demo[]" (onClear)="onClearFile($event)" (onRemove)="onRemoveFile($event)"  (onSelect)="onSelectFile($event)" [showCancelButton]="true" [showUploadButton]="false"
+                        multiple="multiple" accept="image/*" maxFileSize="1000000">
+                        <ng-template pTemplate="content">
+                            <ul *ngIf="uploadedFiles.length">
+                                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                            </ul>
+                        </ng-template>
+                    </p-fileUpload>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="abbr">อธิบาย อย่างย่อ</label>
+                    <input type="text" pInputText id="abbr" [(ngModel)]="newRow.DESC_ABBR" />
+                </div>
+                <div class="p-field  p-col-12 p-md-12">
+                    <label for="desc">อธิบาย</label>
+                    <textarea pInputTextarea [(ngModel)]="newRow.DESC" rows="4"></textarea>
+                </div>
+                <div class="p-field p-col-12 p-md-12">
+                    <label for="remark">หมายเหตุ</label>
+                    <textarea pInputTextarea [(ngModel)]="newRow.REMARK" rows="4"></textarea>
+                </div>
+                <div class="p-field p-col-12 p-md-12" *ngIf="newRow.images != null && newRow.images.length > 0">
+                    <label for="fileatt">รูปภาพ</label>
+                    <p-table [value]="newRow.images" [resizableColumns]="true">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Image</th>
+                                <!-- <th>url</th> -->
+                                <th style="width: 3rem">#</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-imgs>
+                            <tr>
+                                <td><img [src]="imgs.ATTACFILE_URL" [alt]="imgs.ATTACFILE_NAME" width="400" class="p-shadow-4"/></td>
+                                <!-- <td>{{imgs.ATTACFILE_NAME}}</td> -->
+                                <td><button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteImage(imgs)"></button></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
+        </p-panel>
+        <br>
+        <p-panel header="กำหนดราคาสินค้า" *ngIf="!fncSpecialProduct">
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="cost">ต้นทุน</label>
+                    <p-inputNumber inputId="cost" [(ngModel)]="newRow.COST" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="price">ราคาขาย</label>
+                    <p-inputNumber inputId="integeropricenly" [(ngModel)]="newRow.PRICE" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="commission">ค่าคอมมิชชั่น</label>
+                    <p-inputNumber inputId="commission" [(ngModel)]="newRow.COMMISSION" ></p-inputNumber>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-md-6">
+                    <label for="lowest">สินค้าคงคลังขั้นต่ำ</label>
+                    <p-inputNumber inputId="lowest" [(ngModel)]="newRow.PRODUCT_LOWEST" ></p-inputNumber>
+                </div>
+            </div> 
+        </p-panel>
+
+        <p-panel header="ตัวเลือกสินค้า" *ngIf="fncSpecialProduct">
+            <div class="p-field p-col-12 p-md-6">
+                <label for="lowest">คุณสมบัติสินค้า</label>
+                <p-selectButton [options]="attributeOptions" [(ngModel)]="attribute" multiple="multiple" optionLabel="name" (onChange)="onChangeClick($event)"></p-selectButton>
+            </div>
+
+            <div class="p-field p-col-12 p-md-6" *ngFor="let att of attribute">
+                <label for="lowest">{{ att.name }}</label>
+                <p-autoComplete [(ngModel)]="selectedAttribute" [suggestions]="filteredAttribute" (completeMethod)="filterAttribute($event)" field="name" [multiple]="true" [dropdown]="true"></p-autoComplete>
+            </div>
+
+            <p-accordion [multiple]="true">
+                <p-accordionTab header="Header I">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                        ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                </p-accordionTab>
+                <p-accordionTab header="Header II">
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi
+                        architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione
+                        voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.</p>
+                </p-accordionTab>
+                <p-accordionTab header="Header III">
+                    <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati
+                        cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.
+                        Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus.</p>
+                </p-accordionTab>
+            </p-accordion>
+        </p-panel>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
+    </ng-template>
+</p-dialog>

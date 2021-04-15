@@ -1,0 +1,31 @@
+<div class="ui-g">
+    <div class="ui-g-12 ui-md-1 ui-lg-3"></div>
+    <div class="ui-g-12 ui-sm-12 ui-md-10 ui-lg-6">
+        <form #loginForm="ngForm" (ngSubmit)="login()">
+            <p-fieldset [style]="{height: '400px'}">
+                <!-- <p-header><img src="./assets/images/logo.png" class="logo"></p-header> -->
+                <p-card subheader="กรุณาล็อคอินเข้าสู่ระบบ">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <input type="text" [(ngModel)]="username" size="30" pInputText placeholder="Username"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                    </div>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <input type="password" [(ngModel)]="password" size="30" pInputText placeholder="Password"
+                                [ngModelOptions]="{standalone: true}">
+                        </div>
+                        <span *ngIf="!showMsgError">&nbsp;</span>
+                        <span *ngIf="showMsgError" style="color: red;">User or Password is incorrect!</span>
+                    </div>
+                    <p-footer>
+                        <button pButton type="submit" label="Login" icon="pi pi-lock"
+                            style="margin-right: .25em"></button>
+                    </p-footer>
+                </p-card>
+            </p-fieldset>
+        </form>
+    </div>
+    <div class="ui-g-12"></div>
+</div>

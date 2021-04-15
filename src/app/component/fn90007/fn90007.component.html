@@ -1,0 +1,255 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="fn90007 : หน้าการจัดการร้านค้า">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <!-- <label for="ORDER_NO">รหัสร้าน</label>
+                                        <input id="ORDER_NO" type="text" pInputText placeholder="รหัส Order" readonly="true"/> -->
+                                        <p-panel>
+                                            <p-header>
+                                                <div class="ui-toolbar-group-left">
+                                                    <span class="ui-panel-title"
+                                                        style="font-size:14px;display:inline-block;margin-top:2px">ข้อมมูลทั่วไป</span>
+                                                </div>
+                                            </p-header>
+                                            <div class="ui-g">
+                                                <div class="p-fluid">
+                                                    <div class="p-field p-grid">
+                                                        <label for="firstname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">รหัสร้าน</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="firstname" type="text" [(ngModel)]="headInfo.HEAD_CD" pInputText readonly="true"> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">ชื่อร้าน</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_NAME" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">เลขประจำตัวผู้เสียภาษี</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_TAX_NO" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-panel>
+                                        <br/>
+                                        <p-panel>
+                                            <p-header>
+                                                <div class="ui-toolbar-group-left">
+                                                    <span class="ui-panel-title"
+                                                        style="font-size:14px;display:inline-block;margin-top:2px">ข้อมมูลติดต่อ</span>
+                                                </div>
+                                            </p-header>
+                                            <div class="ui-g">
+                                                <div class="p-fluid">
+                                                    <div class="p-field p-grid">
+                                                        <label for="firstname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0" >โทรศัพท์ 1</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="firstname" type="text" [(ngModel)]="headInfo.HEAD_GN_TEL_1" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-field p-grid">
+                                                        <label for="firstname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0" >โทรศัพท์ 2</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="firstname" type="text" [(ngModel)]="headInfo.HEAD_GN_TEL_2" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0" >มือถือ 1</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_MOBLIE_1" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0" >มือถือ 2</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_MOBILE_2" pInputText> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">อีเมมล์</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_EMAIL" pInputText> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Facebook</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_FACEBOOK" pInputText> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">Line</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_LINE" pInputText> 
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="p-field p-grid">
+                                                        <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">เว็บไซต์</label>
+                                                        <div class="p-col-12 p-md-10">
+                                                            <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_GN_WEBSITE" pInputText> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-panel>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <p-panel>
+                                            <p-header>
+                                                <div class="ui-toolbar-group-left">
+                                                    <span class="ui-panel-title"
+                                                        style="font-size:14px;display:inline-block;margin-top:2px">ข้อมมูลส่วนตัว</span>
+                                                </div>
+                                            </p-header>
+                                            <div class="ui-g">
+                                                <div class="ui-g-12">
+                                                    <div class="p-fluid">
+                                                        <div class="p-field p-grid">
+                                                            <label for="firstname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">ชื่อ-นามสกุล</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="firstname" type="text" [(ngModel)]="headInfo.HEAD_PR_FIRSTNAME_LASTNAME" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-field p-grid">
+                                                            <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">อีเมลล์</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_PR_EMAIL" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-field p-grid">
+                                                            <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">เบอร์โทรศัพ 1</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_PR_TEL_1" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-field p-grid">
+                                                            <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">เบอร์โทรศัพ 2</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_PR_TEL_2" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-field p-grid">
+                                                            <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">มือถือ 1</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_PR_MOBILE_1" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                        <div class="p-field p-grid">
+                                                            <label for="lastname" class="p-col-12 p-mb-2 p-md-2 p-mb-md-0">มือถือ 2</label>
+                                                            <div class="p-col-12 p-md-10">
+                                                                <input id="lastname" type="text" [(ngModel)]="headInfo.HEAD_PR_MOBILE_2" pInputText> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-panel>
+                                        <br/>
+                                        <p-panel>
+                                            <p-header>
+                                                <div class="ui-toolbar-group-left">
+                                                    <span class="ui-panel-title"
+                                                        style="font-size:14px;display:inline-block;margin-top:2px">ที่อยู่</span>
+                                                </div>
+                                            </p-header>
+                                            <div class="ui-g">
+                                                <div class="ui-g-12">
+                                                    <div class="p-fluid">
+                                                        <div class="p-field p-grid">
+                                                            <div class="card">
+                                                                <p-toolbar styleClass="p-mb-4">
+                                                                    <ng-template pTemplate="left">
+                                                                        <button pButton pRipple label="เพิ่มที่อยู่" icon="pi pi-plus"
+                                                                            class="p-button-success p-mr-2" (click)="openNewAddress()"></button>
+                                                                    </ng-template>
+                                                                </p-toolbar>
+                                                                <p-table [value]="headInfo.ADDRESSS_LIST">
+                                                                    <ng-template pTemplate="header">
+                                                                        <tr>
+                                                                            <th>ที่อยู่</th>
+                                                                            <th>เบอร์โทรศัพท์</th>
+                                                                            <th>#</th>
+                                                                        </tr>
+                                                                    </ng-template>
+                                                                    <ng-template pTemplate="body" let-rowData>
+                                                                        <tr>
+                                                                            <td>{{rowData.ADDRESS_FULL}}</td>
+                                                                            <td>{{rowData.TEL}}</td>
+                                                                            <td><button pButton pRipple icon="pi pi-pencil"
+                                                                                class="p-button-rounded p-button-success p-mr-2"
+                                                                                (click)="edit(rowData)"></button>
+                                                                                <button pButton pRipple icon="pi pi-trash"
+                                                                                class="p-button-rounded p-button-warning"
+                                                                                (click)="deleteAddress(rowData)"></button></td>
+                                                                                
+                                                                        </tr>
+                                                                    </ng-template>
+                                                                </p-table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-panel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p-button label="บันทึก" icon="pi pi-save" (click)="save()"></p-button> &nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+
+<p-dialog [(visible)]="fncDialog" [style]="{width: '700px'}" header="เพิ่มที่อยู่" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="cd">เบอร์โทรศัพท์</label>
+            <input type="text" pInputText id="cd" [(ngModel)]="addressTel" (ngModelChange)="onChangeAddress(addressNo)"/>
+        </div>
+        <div class="p-field">
+            <label for="cd">ที่อยู่</label>
+            <input type="text" pInputText id="cd" [(ngModel)]="addressNo" autofocus (ngModelChange)="onChangeAddress(addressNo)"/>
+        </div>
+        <div class="p-field">
+            <label for="lastname6">ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</label>
+                    <p-autoComplete [(ngModel)]="addressDetail" [suggestions]="filteredAddress" 
+                        (onSelect)="onSelectAddress($event)"
+                        (completeMethod)="filterAddress($event)" field="FULL_ADDRESS" [minLength]="1"></p-autoComplete>
+        </div> 
+        <div class="p-field">
+            <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" [(ngModel)]="fullAddress" readonly="true"></textarea>
+        </div> 
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="saveAddress()"></button>
+    </ng-template>
+</p-dialog>
+

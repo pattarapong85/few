@@ -1,0 +1,28 @@
+<!-- <p-menubar [model]="items">
+    <div>
+        <input type="text" pInputText placeholder="Search"> 
+        <button pButton label="Logout" icon="pi pi-power-off" style="margin-left:.25em"></button>
+    </div>
+</p-menubar> -->
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-toolbar>
+            <div class="ui-toolbar-group-left">
+                <p-menubar [model]="items"></p-menubar>
+            </div>
+            <div class="ui-toolbar-group-right">
+                <!-- <span class="label-right" *ngIf="isUserRepayment">
+                    {{userName}} {{firstName}} {{lastName}}
+                    <span *ngIf="isUserRepayment" ><p-toggleButton onLabel="Online" offLabel="Offline"
+                        onIcon="pi pi-circle-on" offIcon="pi pi-circle-off" [(ngModel)]="checked" (onChange)="handleChange($event)"></p-toggleButton ></span> -->
+                <!--<span *ngIf="isUserRepayment" ><p-inputSwitch [(ngModel)]="checked" (onChange)="handleChange($event)"></p-inputSwitch> {{toggleTxt}}</span--> 
+                <!--span (click)="logout()" style="font-weight: bold; cursor: pointer;">Logout</span-->
+                <!-- </span>
+                <span class="label-right" style="margin-top: 7px;" *ngIf="!isUserRepayment">{{userName}} {{firstName}} {{lastName}}</span> -->
+                <div class="ui-toolbar-group-right">
+                    <button pButton type="button"  label="ออกจากระบบ" style="margin-left:5px;" (click)="logout()" icon="pi pi-sign-out"></button>
+                </div>
+            </div>
+        </p-toolbar>
+    </div>
+</div>

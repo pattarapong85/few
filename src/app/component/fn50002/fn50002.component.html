@@ -1,0 +1,140 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN50002 : หน้าโอนย้ายสินค้า">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียด</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="ORDER_DATE">วันที่</label>
+                                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="stockDate"></p-calendar>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="SKILL_NO">คลังสินค้าส่ง</label>
+                                        <p-dropdown [options]="wherehouseList" [(ngModel)]="WherehouseSend" placeholder="เลือกคลังสินค้าส่ง" [showClear]="true"></p-dropdown>
+                                    </div> 
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="SKILL_NO">คลังสินค้ารับ</label>
+                                        <p-dropdown [options]="wherehouseList" [(ngModel)]="WherehouseReceive" placeholder="เลือกคลังสินค้ารับ" [showClear]="true"></p-dropdown>
+                                    </div> 
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6" style="text-align: right">
+                                        <textarea rows="3" placeholder="หมายเหตุ" pInputTextarea [(ngModel)]="stock.REMARK"></textarea>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <input id="ORDER_NO" type="text" pInputText placeholder="REF" [(ngModel)]="stock.REF"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">สั่งสินค้า</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3"><p-autoComplete [(ngModel)]="selectedProduct" [suggestions]="filteredproducts"  
+                                        (completeMethod)="filterProduct($event)" field="FULLNAME" 
+                                        (completeOnFocus)="true" (dropdown)="true" [minLength]="1"
+                                         placeholder="ใส่รหัสสินค้า"></p-autoComplete></div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <p-button label="เลือก" icon="pi pi-shopping-cart" (click)="clickSelectProduct()"></p-button>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3"></div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <br>
+                                    <p-table [value]="stockDetail" [columns]="cols">
+                                        <ng-template pTemplate="caption">
+                                            <div class="p-d-flex p-ai-center p-jc-between">
+                                                รายการสินค้าเตรียมเข้า-ออกสต็อค
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+                                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                    {{col.header}}
+                                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                                </th>
+                                                <th>จำนวน</th>
+                                                <th></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td *ngFor="let col of columns">
+                                                    {{rowData[col.field]}}
+                                                </td>
+                                                <td>
+                                                    <p-inputNumber inputId="integeronly" [(ngModel)]="rowData['AMOUNT']"></p-inputNumber>
+                                                </td>
+                                                <td><button pButton pRipple icon="pi pi-trash"
+                                                    class="p-button-rounded p-button-warning"
+                                                    (click)="delDetail(rowIndex)"></button></td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="summary">
+                                            
+                                        </ng-template>
+                                    </p-table> 
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p-button label="บันทึก" icon="pi pi-save" (click)="save()"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+
+
+<p-dialog header="รายการสินค้า" [(visible)]="display" [modal]="true" [responsive]="true"
+    [style]="{width: '850px', minWidth: '650px'}" [minY]="500" [maximizable]="true" [baseZIndex]="500">
+    <p-table [style]="{width:'100%'}" [columns]="colsProduct" [value]="products" [paginator]="true" [rows]="10"
+        selectionMode="single" [(selection)]="selectedProduct" (onRowSelect)="onRowSelect($event)">
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field"
+                    [ngStyle]="{width: col.field == 'name' ? '30%' : '120px'}">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                        ariaLabelDesc="Activate to sort in descending order"
+                        ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-contract>
+            <tr [pSelectableRow]="contract">
+                <td *ngFor="let col of columns">
+                    {{contract[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>

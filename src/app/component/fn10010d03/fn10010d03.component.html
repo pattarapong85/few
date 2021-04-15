@@ -1,0 +1,111 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="fn10011 : หน้าขนส่ง">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="card">
+                            <br>
+                            <div class="p-fluid p-formgrid p-grid">
+                                <div class="p-field p-col">
+                                    <label for="firstname1">หัวข้อ</label>
+                                    <input id="firstname1" type="text" pInputText [(ngModel)]="dataDropdown.VALUE"> 
+                                </div>
+                            </div>
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <p-button label="ยกเลิก" icon="pi pi-chevron-left" class="p-button-info p-mr-2" (click)="backToTable()"></p-button>
+                                    <button pButton pRipple label="เพิ่มช่วงราคา" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+                                    <button pButton pRipple label="บันทึก" icon="pi pi-save" class="p-button-primary p-mr-2" (click)="save()"></button>
+                                </ng-template>
+                        
+                                <ng-template pTemplate="right">
+                                    
+                                </ng-template>
+                            </p-toolbar>
+                            <p-table [value]="details" dataKey="KEY" editMode="row">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width:5rem">#</th>
+                                        <th>น้ำหนักเริ่มต้น (กรัม)</th>
+                                        <th>น้ำหนักสูงสุด (กรัม)</th>
+                                        <th>ผู้จัดส่ง</th>
+                                        <th>ราคา</th>
+                                        <th style="width:8rem"></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+                                    <tr [pEditableRow]="rowData">
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    {{ ri + 1 }}
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{ ri + 1 }}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <p-inputNumber inputId="integeronly" [(ngModel)]="rowData.MIN"></p-inputNumber>
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.MIN}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <p-inputNumber inputId="integeronly" [(ngModel)]="rowData.MAX"></p-inputNumber>
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.MAX}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <p-dropdown [options]="deliverList" [(ngModel)]="rowData.TRANSPORT_NO" [style]="{'width':'100%'}" placeholder="เลือกขนส่ง" [showClear]="true" (onChange)="onchangeTransport($event,ri)"></p-dropdown>
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.TRANSPORT_NAME}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td pEditableColumn>
+                                            <p-cellEditor>
+                                                <ng-template pTemplate="input">
+                                                    <p-inputNumber [(ngModel)]="rowData.PRICE" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2"></p-inputNumber>
+                                                </ng-template>
+                                                <ng-template pTemplate="output">
+                                                    {{rowData.PRICE}}
+                                                </ng-template>
+                                            </p-cellEditor>
+                                        </td>
+                                        <td style="text-align:center">
+                                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil" (click)="onRowEditInit(rowData)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-trash" (click)="onRowDelete(rowData)" class="p-button-rounded p-button-text p-button-danger"></button>
+                                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check" (click)="onRowEditSave(rowData,ri)" class="p-button-rounded p-button-text p-button-success p-mr-2"></button>
+                                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times" (click)="onRowEditCancel(rowData, ri)" class="p-button-rounded p-button-text p-button-danger"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+

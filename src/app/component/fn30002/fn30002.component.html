@@ -1,0 +1,90 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN50001 : หน้าเปลี่ยนแปลงจำนวนสต๊อก">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียด</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="ORDER_DATE">วันที่</label>
+                                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="packDate"></p-calendar>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <input id="ORDER_NO" type="text" pInputText placeholder="หมายเลขคำสั่งซื้อ" [(ngModel)]="orderTracking.ORDER_NO"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <input id="TRACKING" type="text" pInputText placeholder="หมายเลขแทรคกิ้ง" [(ngModel)]="orderTracking.TRACKING_NO"/>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <p-button label="ยกเลิก" icon="pi pi-chevron-left" (click)="backToTable()" class="p-button-primary p-mr-2"></p-button>
+                                    <p-button label="เพิ่ม" icon="pi pi-save" (click)="addToTable(orderTracking)"></p-button>
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายการ</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <br>
+                                    <p-table [value]="orderTrackingList" [columns]="cols">
+                                        <ng-template pTemplate="caption">
+                                            <div class="p-d-flex p-ai-center p-jc-between">
+                                                รายการสินค้าเตรียมอัพเดรท
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="header" let-columns>
+                                            <tr>
+                                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                    {{col.header}}
+                                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td *ngFor="let col of columns">
+                                                    {{rowData[col.field]}}
+                                                </td>
+                                                <td><button pButton pRipple icon="pi pi-trash"
+                                                    class="p-button-rounded p-button-warning"
+                                                    (click)="delDetail(rowIndex)"></button></td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="summary">
+                                            
+                                        </ng-template>
+                                    </p-table> 
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p-button label="บันทึก" icon="pi pi-save" (click)="save()"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

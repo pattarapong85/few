@@ -1,0 +1,179 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN10008 : หน้าคุณสมบัติ">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="card">
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <button pButton pRipple label="เพิ่มใหม่" icon="pi pi-plus"
+                                        class="p-button-success p-mr-2" (click)="openNew()"></button>
+                                    <button pButton pRipple label="ลบ" icon="pi pi-trash" class="p-button-danger"
+                                        (click)="deleteSelected()"
+                                        [disabled]="!selectedRows || !selectedRows.length"></button>
+                                </ng-template>
+                            </p-toolbar>
+                            <p-table #dt [columns]="cols" [value]="dataTable" [paginator]="true"
+                            [globalFilterFields]="['VALUE','ACTIVE_FLAG','createDateFmt','DESC','REMARK','FLAG']"
+                            [(selection)]="selectedRows" [rowHover]="true" dataKey="KEY"
+                            [rowsPerPageOptions]="[10,20,30]" [rows]="10"
+                            currentPageReportTemplate="แสดง {first} ถึง {last} จากทั้งหมด {totalRecords} รายการ"
+                            [showCurrentPageReport]="true">
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th style="width: 3rem"></th>
+                                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                            {{col.header}}
+                                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+                                    <tr>
+                                        <td>
+                                            <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                        </td>
+                                        <td *ngFor="let col of columns">
+                                            {{rowData[col.field]}}
+                                        </td>
+                                        <td>
+                                            <button pButton pRipple icon="pi pi-pencil"
+                                                class="p-button-rounded p-button-success p-mr-2"
+                                                (click)="edit(rowData)"></button>
+                                            <button pButton pRipple icon="pi pi-trash"
+                                                class="p-button-rounded p-button-warning"
+                                                (click)="delete(rowData)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="rowexpansion" let-rowData>
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="p-p-3">
+                                                <p-table [value]="rowData.ATTRIBUTE_DETAIL" dataKey="CODE">
+                                                    <ng-template pTemplate="header">
+                                                        <tr>
+                                                            <th>รหัสตัวเลือก</th>
+                                                            <th>ชื่อตัวเลือก</th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="body" let-detail>
+                                                        <tr>
+                                                            <td>{{detail.CODE}}</td>
+                                                            <td>{{detail.VALUE}}</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="emptymessage">
+                                                        <tr>
+                                                            <td colspan="2">ไม่มีข้อมูล</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(visible)]="fncDialog" [style]="{width: '900px'}" header="รายละเอียดคุณสมบัติ" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="status">สถานะ</label>
+            <p-dropdown [options]="statusList" [(ngModel)]="newRow.ACTIVE_FLAG" placeholder="เลือกสถานะ"
+                [showClear]="true"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !newRow.ACTIVE_FLAG">ต้องเลือกสถานะด้วย</small>
+        </div>
+        <div class="p-field">
+            <label for="cd">รหัสคุณสมบัติ</label>
+            <input type="text" pInputText id="cd" [(ngModel)]="newRow.CODE" required autofocus [readonly]="flagPrimaryKey"/>
+            <small class="p-invalid" *ngIf="submitted && !newRow.CODE">รหัสคุณสมบัติต้องใส่</small>
+        </div>
+        <div class="p-field">
+            <label for="cd">ชื่อคุณสมบัติ</label>
+            <input type="text" pInputText id="cd" [(ngModel)]="newRow.VALUE" required/>
+            <small class="p-invalid" *ngIf="submitted && !newRow.VALUE">ชื่อหน่วยยูนิตต้องใส่</small>
+        </div>
+        <div class="p-field">
+            <label for="headname">อธิบาย</label>
+            <input type="text" pInputText id="headname" [(ngModel)]="newRow.DESC" />
+        </div>
+        <div class="p-field">
+            <label for="headname">หมายเหตุ</label>
+            <input type="text" pInputText id="headname" [(ngModel)]="newRow.REMARK" />
+        </div>
+        <div class="card">
+            <p-toolbar styleClass="p-mb-4">
+                <ng-template pTemplate="left">
+                    <h5 class="p-m-0">เพิ่มตัวเลือกคุณสมบัติ</h5>
+                    <!-- <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button> -->
+                    <!-- <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedProducts()" [disabled]="!selectedProducts || !selectedProducts.length"></button> -->
+                </ng-template>
+        
+                <ng-template pTemplate="right">
+                    <!-- <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="p-mr-2 p-d-inline-block"></p-fileUpload>
+                    <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button> -->
+                </ng-template>
+            </p-toolbar>
+            <div class="p-field p-grid">
+                <label for="firstname3" class="p-col-fixed" style="width:100px">รหัสตัวเลือก</label>
+                <div class="p-col">
+                    <input id="firstname3" type="text" pInputText [(ngModel)]="codeAttdetail"> 
+                </div>
+            </div>
+            <div class="p-field p-grid">
+                <label for="lastname3" class="p-col-fixed" style="width:100px">ชื่อตัวเลือก</label>
+                <div class="p-col">
+                    <input id="lastname3" type="text" pInputText [(ngModel)]="valueAttdetail"> 
+                </div>
+            </div>
+            <div class="p-field p-grid" style="width:100px">
+                <!-- <label for="lastname3" class="p-col-fixed" style="width:100px">ชื่อตัวเลือก</label> -->
+                <div class="p-col">
+                    <button pButton pRipple label="เพิ่ม" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="newAttribute()"></button> 
+                </div>
+            </div>
+        <p-table #dt [value]="newRow.ATTRIBUTE_DETAIL">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>รหัสตัวเลือก</th>
+                <th>ชื่อตัวเลือก</th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                <td>{{product.CODE}}</td>
+                <td>{{product.VALUE}}</td>
+                <td>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteAttDetail(product)"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                จำนวนตัวเลือก {{newRow.ATTRIBUTE_DETAIL ? newRow.ATTRIBUTE_DETAIL.length : 0 }} แถว
+            </div>
+        </ng-template>
+    </p-table>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
+    </ng-template>
+</p-dialog>

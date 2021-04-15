@@ -1,0 +1,487 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN20003: หน้าจัดการคำสั่งซื้อ">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <button pButton pRipple type="button" label="กลับ" class="p-button-secondary p-mr-2" (click)="backToTable()"></button>
+                    <button pButton pRipple type="button" label="แก้ไข" class="p-button-success p-mr-2" (click)="editOrder()"></button>
+                    <button pButton pRipple type="button" label="พรีออเดอร์" class="p-button-info p-mr-2" (click)="preOrder()"></button>
+                    <button pButton pRipple type="button" label="Re Oder" class="p-button-warning p-mr-2" (click)="reOrder()"></button>
+                    <button pButton pRipple type="button" label="ยกเลิก" class="p-button-danger p-mr-2" (click)="cancelOrder()"></button>
+                    <br/>
+                    <p-panel header="สถานะ">
+                        <div class="card">
+                            <!-- <p-toast></p-toast> -->
+                            <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="true"></p-steps>
+                        </div>
+                        <div class="p-fluid p-formgrid p-grid">
+                            <div class="p-field p-col-12 p-md-4">
+                                <p-card header="ที่อยู่ในการจัดส่ง" subheader="รับของ" styleClass="p-card-shadow">
+                                    <ng-template pTemplate="header">
+                                    </ng-template>
+                                    <p>ชื่อ : {{order.CUS_NAME}}</p>
+                                    <p>ที่อยู่ : {{order.CUS_ADDRESS_SEND}}</p>
+                                    <p>เบอร์โทรศัพท์ 1 : {{order.CUS_TEL1}}</p>
+                                    <p>เบอร์โทรศัพท์ 2 : {{order.CUS_TEL2}}</p>
+                                    <ng-template pTemplate="footer">
+                                        <p-button label="แก้ไขที่อยู่" icon="pi pi-unlock" (click)="openEditAddress('CUS')"></p-button>
+                                    </ng-template>
+                                </p-card> 
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p-card header="ที่อยู่ใบเสร็จ" subheader="ใบเสร็จ" styleClass="p-card-shadow">
+                                    <ng-template pTemplate="header">
+                                    </ng-template>
+                                    <p>ชื่อ : {{order.BILL_NAME}}</p>
+                                    <p>ที่อยู่ : {{order.BILL_ADDRESS_SEND}}</p>
+                                    <p>เบอร์โทรศัพท์ 1 : {{order.BILL_TEL1}}</p>
+                                    <p>เบอร์โทรศัพท์ 2 : {{order.BILL_TEL2}}</p>
+                                    <ng-template pTemplate="footer">
+                                        <p-button label="แก้ไขที่อยู่" icon="pi pi-unlock" (click)="openEditAddress('BILL')"></p-button>
+                                    </ng-template>
+                                </p-card>  
+                            </div>
+                            <div class="p-field p-col-12 p-md-4">
+                                <p-card header="รายละเอียด" subheader="Detail" styleClass="p-card-shadow">
+                                    <ng-template pTemplate="header">
+                                    </ng-template>
+                                    <p>วันที่ : {{orderDateStr}}</p>
+                                    <p>วันที่รับสินค้า  : {{order.RECEIVE_DATE}}</p>
+                                    <p>อีเมลล์  : {{order.EMAIL}}</p>
+                                    <p>เบอร์มือถือ : {{order.CUS_TEL1}}</p>
+                                    <p>การจ่ายเงิน :  {{order.STATUS_TRANFER_NAME}}</p>
+                                    <p>การคิดราคาส่ง : {{order.TANSPORT_RATE_NAME}}</p>
+                                </p-card> 
+                            </div>  
+                        </div> 
+                        
+                        <div class="p-fluid p-formgrid p-grid">
+                            <br>
+                            <p-table [value]="orderDetail">
+                                <ng-template pTemplate="caption">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        รายกสนสินค้า
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th>รูป</th>
+                                        <th>รหัสสินค้า</th>
+                                        <th>ชื่อสินค้า</th>
+                                        <th>หมวดหมู่</th>
+                                        <th>ราคา</th>
+                                        <th>ส่วนลด</th>
+                                        <th>จำนวน</th>
+                                        <th>หน่วย</th>
+                                        <th>ราคารวม</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                                    <tr>
+                                        <td><img [src]="product.PRODUCT_IMG" [alt]="" height="100" width="100" class="p-shadow-4" /></td>
+                                        <td>{{product.PRODUCT_SKU}}</td>
+                                        <td>{{product.PRODUCT_NAME}}</td>
+                                        <td>{{product.PRODUCT_CATEGORY}}</td>
+                                        <td>{{product.PRICE}}</td>
+                                        <td>{{product.DCAMOUNT}}</td>
+                                        <td>{{product.AMOUNT}}</td>
+                                        <td>{{product.UNIT_NAME}}</td>
+                                        <td>{{product.TOTAL_PRICE}}</td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    
+                                    <div class="p-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ภาษีมูลค่าเพิ่ม</label></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TAX}} บาท</div>
+
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ราคาจัดส่ง</label></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.SHIPPING_COST}} บาท</div>
+
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ค่าบริการ COD</label></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.COD}} บาท</div>
+
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ส่วนลด</label></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TOTAL_DC}}  บาท</div>
+
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3"></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ยอดรวม</label></div>
+                                        <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TOTAL_ORDER}}  บาท</div>
+                                    </div>
+                                </ng-template>
+                            </p-table> 
+                        </div>
+
+                    </p-panel>
+                    
+                    <p-accordion [multiple]="true">
+                        <p-accordionTab header="การชำระเงิน">
+                            <button pButton pRipple label="เพิ่มการชำระเงิน" icon="pi pi-plus" iconPos="left"
+                            class="p-button-success p-mr-2" (click)="openNewOrderPay()" [disabled]="disAddpay"></button> 
+                            <button pButton pRipple label="ยืนยันการชำระเงินปลายทาง" icon="pi pi-check" iconPos="left" 
+                            class="p-button-primary p-mr-2" (click)="confirmPayCOD()" [disabled]="disConfirmPayCOD" *ngIf="order.STATUS_TRANFER_NO == 'COD'"></button>
+                            <button pButton pRipple label="ยืนยันการชำระเงินครบ" icon="pi pi-check" iconPos="left"
+                            class="p-button-primary p-mr-2" (click)="confirmPay()" [disabled]="disConfirmPayTNF" *ngIf="order.STATUS_TRANFER_NO == 'BANK'"></button>
+                            <div class="card">
+                                <p-table [value]="orderPay" styleClass="p-datatable-responsive-demo">
+                                    <ng-template pTemplate="header" let-columns>
+                                        <tr>
+                                            <th>การชำระเงิน</th>
+                                            <th>หลักฐานการชำระเงิน</th>
+                                            <th>วันที่/เวลา</th>
+                                            <th>เลขบัญชี</th>
+                                            <th>ยอดรวม</th>
+                                            <th>ค่าบริการ COD</th>
+                                            <th>ค่าธรรมเนียม</th>
+                                            <th>REF</th>
+                                            <th>หมายเหตุ</th>
+                                            <th>สถานะ</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                        <tr>
+                                            <td>{{ rowData.BANK_NAME }}</td>
+                                            <td>{{ rowData.DELIVER_NAME }}</td>
+                                            <td><button pButton type="button" label="File" class="p-button-link" icon="pi pi-paperclip" (click)="openFile(rowData)"></button></td>
+                                            <td>{{ rowData.AMOUNT }}</td>
+                                            <td>{{ rowData.COD_SERVICE }}</td>
+                                            <td>{{ rowData.ACCOUNT_NO }}</td>
+                                            <td>{{ rowData.FEE }}</td>
+                                            <td>{{ rowData.REF }}</td>
+                                            <td>{{ rowData.REMARK }}</td>
+                                            <td>{{ rowData.FLAG }}</td>
+                                                <td>
+                                                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editPay(rowData)" [disabled]="disConfirmPayCOD && disConfirmPayTNF"></button>
+                                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deletePay(rowData)" [disabled]="disConfirmPayCOD && disConfirmPayTNF"></button>
+                                                </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-accordionTab>
+                        <p-accordionTab header="การจัดส่ง">
+                            <button pButton pRipple label="เพิ่มการจัดส่ง" icon="pi pi-plus" iconPos="left"
+                            class="p-button-success p-mr-2" (click)="openNewTransport()" [disabled]="disAddTransport"></button> 
+                            <button pButton pRipple label="ยืนยันการจัดส่ง" icon="pi pi-check" iconPos="left"
+                            class="p-button-primary p-mr-2" (click)="ConfirmTransport()" [disabled]="disConfirmTransport"></button>
+                            <div class="card">
+                                <p-table [value]="orderTransport" [columns]="colsTransport" styleClass="p-datatable-responsive-demo">
+                                    <ng-template pTemplate="header" let-columns>
+                                        <tr>
+                                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                {{col.header}}
+                                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                        <tr>
+                                            <td *ngFor="let col of columns">
+                                                <span *ngIf="col.field != 'FLAG' && col.field != 'ATTACFILE_URL'">{{rowData[col.field]}}</span>
+                                                <button pButton type="button" *ngIf="col.field == 'ATTACFILE_URL' && rowData[col.field] != undefined && rowData[col.field] != null" 
+                                                label="File" class="p-button-link" icon="pi pi-paperclip" (click)="openFile(rowData)"></button>
+                                                <p-button *ngIf="col.field == 'FLAG'" label="{{rowData[col.field]}}"
+                                                icon="pi pi-check" styleClass="p-button-sm" (click)="openConfirm(rowData)"></p-button>
+                                            </td>   
+                                                <td>
+                                                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editTransport(rowData)" [disabled]="disConfirmTransport"></button>
+                                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteTransport(rowData)" [disabled]="disConfirmTransport"></button>
+                                                </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-accordionTab>
+                        <!-- <p-accordionTab header="ใบแจ้งหนี้">
+                            <div class="card">
+                                <h5>Fit Mode</h5>
+                                <p-table [value]="productList" [resizableColumns]="true" styleClass="p-datatable-gridlines">
+                                    <ng-template pTemplate="header">
+                                        <tr>
+                                            <th pResizableColumn>Code</th>
+                                            <th pResizableColumn>Name</th>
+                                            <th pResizableColumn>Category</th>
+                                            <th pResizableColumn>Quantity</th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-product>
+                                        <tr>
+                                            <td>{{product.code}}</td>
+                                            <td>{{product.name}}</td>
+                                            <td>{{product.category}}</td>
+                                            <td>{{product.quantity}}</td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-accordionTab> -->
+                        <p-accordionTab header="ข้อขวาม">
+                            <button pButton pRipple label="เพิ่มข้อความ" icon="pi pi-plus" iconPos="left"
+                            class="p-button-success p-mr-2" (click)="openNewMessage()"></button> 
+                            <div class="card">
+                                <p-table [value]="orderNote" [columns]="colsNote" styleClass="p-datatable-responsive-demo">
+                                    <ng-template pTemplate="header" let-columns>
+                                        <tr>
+                                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                {{col.header}}
+                                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                        <tr>
+                                            <td *ngFor="let col of columns">
+                                                <span *ngIf="col.field != 'FLAG' && col.field != 'ATTACFILE_URL'">{{rowData[col.field]}}</span>
+                                                <button pButton type="button" *ngIf="col.field == 'ATTACFILE_URL' && rowData[col.field] != undefined && rowData[col.field] != null" 
+                                                label="File" class="p-button-link" icon="pi pi-paperclip" (click)="openFile(rowData)"></button>
+                                                <p-button *ngIf="col.field == 'FLAG'" label="{{rowData[col.field]}}"
+                                                icon="pi pi-check" styleClass="p-button-sm" (click)="openConfirm(rowData)"></p-button>
+                                            </td>   
+                                                <td>
+                                                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editNote(rowData)"></button>
+                                                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteNote(rowData)"></button>
+                                                </td>
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-accordionTab>
+                        <p-accordionTab header="ประวัติการทำรายการ">
+                            <div class="card">
+                                <p-table [value]="orderHistory" [columns]="colsHistory" styleClass="p-datatable-responsive-demo">
+                                    <ng-template pTemplate="header" let-columns>
+                                        <tr>
+                                            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                                {{col.header}}
+                                                <p-sortIcon [field]="col.field"></p-sortIcon>
+                                            </th>
+                                        </tr>
+                                    </ng-template>
+                                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                        <tr>
+                                            <td *ngFor="let col of columns">{{rowData[col.field]}}</td>   
+                                        </tr>
+                                    </ng-template>
+                                </p-table>
+                            </div>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(visible)]="fncDialogOrderSlip" [style]="{width: '400px'}" header="File" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field">
+        <div class="p-field p-col-12 p-md-12">
+            <img [src]="imageURL"  onerror="this.onerror=null; this.src='assets/noimage.jpg';" width="300px" height="300px"/>
+        </div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="fncDialogOrderPay" [style]="{width: '700px'}" header="การชำระเงิน" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'COD'">
+            <label for="cd">ขนส่งเก็บเงินปลายทาง</label>
+            <p-dropdown [options]="deleverList" [(ngModel)]="newRowOrderPay.DELIVER_CODE" placeholder="เลือกขนส่งสำหรับเก็บเงินปลายทาง" [showClear]="true" (onChange)="onchangeCOD($event)"></p-dropdown>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'BANK'">
+            <label for="cd">ธนาคาร</label>
+            <p-dropdown [options]="bankList" [(ngModel)]="newRowOrderPay.BANK_CODE" placeholder="เลือกธนาคารสำหรับชำระเงิน" [showClear]="true" (onChange)="onchangeBank($event)"></p-dropdown>
+        </div>
+        <div class="p-field">
+            <label for="transferDate">วันที่ชำระงิน</label>
+            <p-calendar [(ngModel)]="transferDate" [showTime]="true" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+        </div>
+        <div class="p-field">
+            <label for="amount">จำนวนเงิน</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.AMOUNT" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'COD'">
+            <label for="amount">ค่าบริการเก็บเงินปลายทาง</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.COD_SERVICE" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field">
+            <label for="amount">ค่าธรรมเนียม</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.FEE" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'BANK'">
+            <label for="accountNo">เลขบัญชี</label>
+            <input type="text" pInputText id="accountNo" [(ngModel)]="newRowOrderPay.ACCOUNT_NO" />
+        </div>
+        <div class="p-field">
+            <label for="ref">Ref</label>
+            <input type="text" pInputText id="ref" [(ngModel)]="newRowOrderPay.REF" />
+        </div>
+        <div class="p-field">
+            <label for="remark">หมายเหตุ</label>
+            <input type="text" pInputText id="remark" [(ngModel)]="newRowOrderPay.REMARK" />
+        </div>
+        <div class="p-field">
+            <label for="remark">สถานะ</label>
+            <p-dropdown [options]="statusList" [(ngModel)]="newRowOrderPay.ACTIVE_FLAG" placeholder="เลือกสถานะ"
+                [showClear]="true"></p-dropdown>
+        </div>
+        <div class="p-field">
+        <div class="p-field p-col-12 p-md-6">
+            <label for="nameSocial">เอกสารแนบ</label>
+            <p-fileUpload mode="basic" name="demo[]" accept="image/*" maxFileSize="1000000" (onSelect)="onUpload($event)" *ngIf="this.newRowOrderPay.ATTACFILE_URL == null"></p-fileUpload>
+            <div>
+            <img [src]="this.newRowOrderPay.ATTACFILE_URL"  onerror="this.onerror=null;this.src='assets/noimage.jpg';"  
+            width="300px" height="300px" *ngIf="this.newRowOrderPay.ATTACFILE_URL != null"/>
+            <button pButton pRipple type="button" icon="pi pi-times" 
+            class="p-button-rounded p-button-danger" (click)="deleteFileOrderPay(this.newRowOrderPay)" *ngIf="this.newRowOrderPay.ATTACFILE_URL != null"></button>
+            </div>
+        </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="saveOrderPay()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="fncDialogOrderTransport" [style]="{width: '700px'}" header="การขนส่ง" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field">
+            <label for="cd">ขนส่ง</label>
+            <p-dropdown [options]="deleverList" [(ngModel)]="newRowTransport.TRANSPORT_NO" placeholder="เลือกขนส่ง" [showClear]="true" (onChange)="onchangeTransport($event)"></p-dropdown>
+        </div>
+        <div class="p-field">
+            <label for="transferDate">วันที่ส่งสินค้า</label>
+            <p-calendar [(ngModel)]="transportDate" [showTime]="true" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+        </div>
+        <div class="p-field">
+            <label for="cd">ที่อยู่ผู้ส่ง</label>
+            <p-dropdown [options]="addressList" [(ngModel)]="newRowTransport.MY_ADDRESS_DROPDOWN" placeholder="เลือกที่อยู่" [showClear]="true" (onChange)="onchangeAddress($event)"></p-dropdown>
+        </div>
+        <div class="p-field">
+            <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" [(ngModel)]="newRowTransport.MY_ADDRESS"></textarea>
+        </div>
+        <hr>
+        <div class="p-field">
+            <label for="customername">ผู้รับ</label>
+            <input type="text" pInputText id="customername" [(ngModel)]="newRowTransport.CUS_NAME"/>
+        </div>
+        <div class="p-field">
+            <label for="cusaddress">ที่อยู่ผู้รับ</label>
+            <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" [(ngModel)]="newRowTransport.CUS_ADDRESS_FULL"></textarea>
+        </div>
+        <div class="p-field">
+            <label for="tel">เบอร์โทรศัพท์</label>
+            <input type="text" pInputText id="tel1" [(ngModel)]="newRowTransport.TEL1"/>
+        </div>
+        <div class="p-field">
+            <label for="tel2">เบอร์โทรศัพท์สำรอง</label>
+            <input type="text" pInputText id="tel2" [(ngModel)]="newRowTransport.TEL2"/>
+        </div>
+        <hr>
+        <div class="p-field">
+            <label for="tracking">หมายเลขแทร็คกิ้ง</label>
+            <input type="text" pInputText id="tracking" [(ngModel)]="newRowTransport.TRACKING_NO" />
+        </div>
+        <!-- <div class="p-field">
+            <label for="tracking">ค่าจัดส่ง</label>
+            <p-inputNumber [(ngModel)]="newRowTransport.SHIPPING_COST" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field">
+        <div class="p-field p-col-12 p-md-6">
+            <label for="nameSocial">เอกสารแนบ</label>
+            <p-fileUpload mode="basic" name="att[]" accept="image/*" maxFileSize="1000000" (onSelect)="onUpload($event)" *ngIf="newRowTransport.ATTACFILE_URL == null"></p-fileUpload>
+            <div>
+            <img [src]="newRowTransport.ATTACFILE_URL"  onerror="this.onerror=null;this.src='assets/noimage.jpg';"  
+            width="300px" height="300px" *ngIf="newRowTransport.ATTACFILE_URL != null"/>
+            <button pButton pRipple type="button" icon="pi pi-times" 
+            class="p-button-rounded p-button-danger" (click)="deleteFileOrderPay(newRowTransport)" *ngIf="newRowTransport.ATTACFILE_URL != null"></button>
+            </div>
+        </div> 
+        </div>-->
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="saveOrderTransport()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="fncDialogOrderMessage" [style]="{width: '700px'}" header="ข้อความ" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field">
+            <label for="message">ข้อความ</label>
+            <textarea [rows]="5" [cols]="30" pInputTextarea autoResize="autoResize" [(ngModel)]="newRowOrderNote.MESSAGE"></textarea>
+        </div>
+        <div class="p-field">
+        <div class="p-field p-col-12 p-md-6">
+            <label for="nameSocial">เอกสารแนบ</label>
+            <p-fileUpload mode="basic" name="att[]" accept="image/*" maxFileSize="1000000" (onSelect)="onUpload($event)" *ngIf="newRowOrderNote.ATTACFILE_URL == null"></p-fileUpload>
+            <div>
+            <img [src]="newRowOrderNote.ATTACFILE_URL"  onerror="this.onerror=null;this.src='assets/noimage.jpg';"  
+            width="300px" height="300px" *ngIf="newRowOrderNote.ATTACFILE_URL != null"/>
+            <button pButton pRipple type="button" icon="pi pi-times" 
+            class="p-button-rounded p-button-danger" (click)="deleteFileOrderNote(newRowOrderNote)" *ngIf="newRowOrderNote.ATTACFILE_URL != null"></button>
+            </div>
+        </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="saveOrderNote()"></button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="fncAddressDialog" [style]="{width: '450px'}" header="รายละเอียด" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field">
+            <label for="cusname">ชื่อลูกค้า</label>
+            <input type="text" pInputText id="cusname" [(ngModel)]="newRowAddress.NAME"/>
+        </div>
+        <div class="p-field">
+            <label for="cusaddress">ที่อยู่</label>
+            <input type="text" pInputText id="cusaddress" [(ngModel)]="newRowAddress.ADDRESS"/>
+        </div>
+        <div class="p-field">
+            <label for="fukkaddress">ตำบล อำเภอ จังหวัด รหัสไปรษณีย์</label>
+            <p-autoComplete [(ngModel)]="newRowAddress.FULL_ADDRESS" [suggestions]="filteredAddress" 
+            (onSelect)="onSelectAutoComplete($event)"
+            (completeMethod)="filterAddress($event)" field="FULL_ADDRESS" [minLength]="1"></p-autoComplete>
+        </div>
+        <div class="p-field">
+            <label for="tel1">เบอร์โทร</label>
+            <input type="text" pInputText [(ngModel)]="newRowAddress.TEL"/>
+        </div>
+        <div class="p-field">
+            <label for="tel2">เบอร์โทรสำรอง</label>
+            <input type="text" pInputText [(ngModel)]="newRowAddress.TEL2"/>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="saveAddress()"></button>
+    </ng-template>
+</p-dialog>
+

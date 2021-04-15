@@ -1,0 +1,163 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="fn10009 : หน้าช่องทางการขาย">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="card">
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <button pButton pRipple label="เพิ่มใหม่" icon="pi pi-plus"
+                                        class="p-button-success p-mr-2" (click)="openNew()"></button>
+                                    <button pButton pRipple label="ลบ" icon="pi pi-trash" class="p-button-danger"
+                                        (click)="deleteSelected()"
+                                        [disabled]="!selectedRows || !selectedRows.length"></button>
+                                </ng-template>
+
+                                <!-- <ng-template pTemplate="right">
+                                    <button pButton pRipple label="Export PDF" icon="pi pi-upload" class="p-button-danger p-mr-2" (click)="exportPDF()"></button>
+                                    <button pButton pRipple label="Export EXCEL" icon="pi pi-upload" class="p-button-success" (click)="exportEXCEL()"></button>
+                                </ng-template> -->
+                            </p-toolbar>
+
+                            <p-table #dt [value]="dataTable" [paginator]="true"
+                                [globalFilterFields]="['CD','VALUE','ACTIVE_FLAG','CREATE_DATE_FMT','DESC','REMARK','FLAG','CREATE_BY']"
+                                [(selection)]="selectedRows" [rowHover]="true" dataKey="KEY"
+                                [rowsPerPageOptions]="[10,20,30]" [rows]="10"
+                                currentPageReportTemplate="แสดง {first} ถึง {last} จากทั้งหมด {totalRecords} รายการ"
+                                [showCurrentPageReport]="true">
+                                <ng-template pTemplate="caption">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        <!-- <h5 class="p-m-0">Manage Products</h5> -->
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText type="text"
+                                                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                                placeholder="ค้นหา..." />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th style="width: 3rem">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                       <th>คลังสินค้า</th>
+                                       <th>รหัสช่องทางขาย</th>
+                                       <th>ช่องทางขาย</th>
+                                       <th>ชื่อช่องทางขาย</th>
+                                       <th>อธิบาย</th>
+                                       <th>หมายเหตุ</th>
+                                       <th>สถานะ</th>
+                                       <th>ค่าเริ่มต้น</th>
+                                       <th>วันที่สร้าง</th>
+                                       <th>สร้างโดย</th>
+                                        <th></th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                    <tr>
+                                        <td>
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td>{{ rowData.ATT_02 }}</td>
+                                        <td>{{ rowData.CD }}</td>
+                                        <td>{{ rowData.ATT_01 }}</td>
+                                        <td>{{ rowData.VALUE }}</td>
+                                        <td>{{ rowData.DESC }}</td>
+                                        <td>{{ rowData.REMARK }}</td>
+                                        <td>{{ rowData.ACTIVE_FLAG == 'Y' ? 'เปิด' : 'ปิด' }}</td>
+                                        <td>{{ rowData.ATT_05 }}</td>
+                                        <td>{{ rowData.CREATE_DATE.toDate() | date : 'dd/MM/yyyy HH:mm' }}</td>
+                                        <td>{{ rowData.CREATE_BY }}</td>
+                                        <td>
+                                            <button pButton pRipple icon="pi pi-pencil"
+                                                class="p-button-rounded p-button-success p-mr-2"
+                                                (click)="edit(rowData)"></button>
+                                            <button pButton pRipple icon="pi pi-trash"
+                                                class="p-button-rounded p-button-warning"
+                                                (click)="delete(rowData)"></button>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        จำนวน {{dataTable ? dataTable.length : 0 }} รายการ.
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+<p-dialog [(visible)]="fncDialog" [style]="{width: '450px'}" header="รายละเอียด" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="status">สถานะ</label>
+            <p-dropdown [options]="statusList" [(ngModel)]="newRow.ACTIVE_FLAG" placeholder="เลือกสถานะ"
+                [showClear]="true"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !newRow.ACTIVE_FLAG">ต้องเลือกสถานะด้วย</small>
+        </div>
+        <div class="p-field">
+            <label for="status">คลังสินค้า</label>
+            <p-dropdown [options]="wherehouseList" [(ngModel)]="newRow.ATT_02" placeholder="เลือกคลังสินค้า"
+                [showClear]="true"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !newRow.ATT_02">ต้องเลือกช่องทางด้วย</small>
+        </div>
+        <div class="p-field">
+            <label for="cd">รหัสช่องทางการขาย</label>
+            <input type="text" pInputText id="value" [(ngModel)]="newRow.CD" required autofocus/>
+            <small class="p-invalid" *ngIf="submitted && !newRow.CD">รหัสช่องทางการขายต้องใส่</small>
+        </div>
+        <div class="p-field">
+            <label for="status">ช่องทาง</label>
+            <p-dropdown [options]="channels" [(ngModel)]="newRow.ATT_01" placeholder="เลือกช่องทาง"
+                [showClear]="true"></p-dropdown>
+            <small class="p-invalid" *ngIf="submitted && !newRow.ATT_01">ต้องเลือกช่องทางด้วย</small>
+        </div>
+        <div class="p-field">
+            <label for="cd">ชื่อช่องการขาย</label>
+            <input type="text" pInputText id="value" [(ngModel)]="newRow.VALUE" required/>
+            <small class="p-invalid" *ngIf="submitted && !newRow.VALUE">ชื่อช่องทางการขายต้องใส่</small>
+        </div>
+        <div class="p-field">
+            <label for="headname">อธิบาย</label>
+            <input type="text" pInputText id="headname" [(ngModel)]="newRow.DESC" />
+        </div>
+        <div class="p-field">
+            <label for="headname">หมายเหตุ</label>
+            <input type="text" pInputText id="headname" [(ngModel)]="newRow.REMARK" />
+        </div>
+        <div class="p-field">
+            <label for="default">ตั้งเป็นค่าเริ่มต้น</label> &nbsp;&nbsp;
+            <p-checkbox [(ngModel)]="checked" binary="true" inputId="binary"></p-checkbox>
+        </div>
+        <div class="p-field">
+            <div class="p-field p-col-12 p-md-6">
+                <label for="nameSocial">รูป</label>
+                <p-fileUpload mode="basic" name="att[]" accept="image/*" maxFileSize="1000000" (onSelect)="onUpload($event)" *ngIf="newRow.ATTACFILE_URL == null"></p-fileUpload>
+                <div>
+                <img [src]="newRow.ATTACFILE_URL"  onerror="this.onerror=null;this.src='assets/noimage.jpg';"  
+                width="300px" height="300px" *ngIf="newRow.ATTACFILE_URL != null"/>
+                <button pButton pRipple type="button" icon="pi pi-times" 
+                class="p-button-rounded p-button-danger" (click)="deleteFile(newRow)" *ngIf="newRow.ATTACFILE_URL != null"></button>
+                </div>
+            </div> 
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="save()"></button>
+    </ng-template>
+</p-dialog>

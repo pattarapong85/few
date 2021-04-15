@@ -1,0 +1,510 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN200002 : หน้าสั่งสินค้า">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel [toggleable]="true" [collapsed]="true">
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียดวันที่</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <div class="ui-g-12">
+                                    <div class="p-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-3">
+                                            <label for="ORDER_NO">รหัส Order  *</label>
+                                            <input id="ORDER_NO" type="text" pInputText placeholder="รหัส Order" [(ngModel)]="order.ORDER_NO" readonly="true"/>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-3">
+                                            <label for="orderDate">วันที่  *</label>
+                                            <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="orderDate"></p-calendar>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="orderDate">วันที่จ่ายเงิน</label>
+                                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="transferDate"></p-calendar>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="orderDate">วันที่แพค</label>
+                                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="packDate"></p-calendar>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="ORDER_DATE">วันที่ส่งสินค้า</label>
+                                        <p-calendar [(ngModel)]="transportDate" [showTime]="true" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="ORDER_DATE">วันที่รับสินค้า</label>
+                                        <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="orderReceiveDate"></p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียดการสั่งซื้อ เลขที่ {{ order.ORDER_NO }}</span>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">วันที่{{ orderDate | date : 'dd/MM/yyyy' }}</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="SKILL_NO">ใส่รายละเอียดลูกค้า *</label>
+                                        <p-autoComplete [(ngModel)]="selectedCustomers" [suggestions]="filteredCustomers"  
+                                            (completeMethod)="filterCustomerList($event)" field="FULLNAME" 
+                                            (completeOnFocus)="true" (dropdown)="true" [minLength]="1"
+                                            (onSelect)="onSelectCustomer($event)" placeholder="ค้นหาลูกค้า">
+                                        </p-autoComplete>
+                                    </div>
+                                    <!-- <div class="p-field p-col-12 p-md-6">
+                                        <label for="SKILL_NO">ทักษะการขาย  *</label>
+                                        <p-dropdown [options]="skills" [(ngModel)]="order.SKILL_NO" placeholder="เลือกทักษะการขาย" [showClear]="true"></p-dropdown>
+                                    </div>    -->
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="channel">ช่องทาง  *</label>
+                                        <!-- <p-dropdown [options]="channels" [(ngModel)]="order.CHANNEL_NO" placeholder="ช่องทาง" [showClear]="true"></p-dropdown> -->
+                                        <p-dropdown [options]="channels" [(ngModel)]="order.CHANNEL_NO">
+                                            <ng-template let-item pTemplate="selectedItem">
+                                               <img src="{{item.title}}" style="width:30px;vertical-align:middle" />
+                                               <span style="vertical-align:middle">{{item.label}}</span>
+                                           </ng-template>
+                                           <ng-template let-car pTemplate="item">
+                                               <div style="position: relative;height:25px;">
+                                               <img src="{{car.title}}" style="width:30px;position:absolute;top:1px;left:5px"/>
+                                               <div style="font-size:14px;float:right;margin-top:4px">{{car.label}}</div> </div>
+                                           </ng-template>
+                                       </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="nameSocial">ชื่อ Social</label>
+                                        <input id="nameSocial" type="text" pInputText placeholder="ชื่อ Social" [(ngModel)]="order.NAME_SOCIAL"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="customer">ชื่อลูกค้า  *</label>
+                                        <input id="customer" type="text" pInputText  placeholder="ชื่อลูกค้า" [(ngModel)]="order.CUS_NAME"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="TANSPORT_RATE">การจัดส่ง  *</label>
+                                        <p-dropdown [options]="transportList" [(ngModel)]="order.TANSPORT_RATE_NO" placeholder="เลือกการจัดส่ง" [showClear]="true"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="tel1">เบอร์โทร  *</label>
+                                        <input id="tel1" type="text" pInputText  placeholder="เบอร์โทร" [(ngModel)]="order.CUS_TEL1"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <label for="tel2">เบอร์โทรสำรอง</label>
+                                        <input id="tel2" type="text" pInputText placeholder="เบอร์โทรสำรอง" [(ngModel)]="order.CUS_TEL2"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="TANSPORT_RATE">ขนส่ง  *</label>
+                                        <p-dropdown [options]="deleverList" [(ngModel)]="order.TRANSPORT_NO" placeholder="เลือกขนส่ง" [showClear]="true" (onChange)="onchangeTransport($event)"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="cusAddress">ที่อยู่ลูกค้า  *</label>
+                                        <input id="cusAddress" type="text" pInputText  placeholder="ที่อยู่ลูกค้า" [(ngModel)]="order.CUS_ADDRESS"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="channel">การชำระเงิน</label>
+                                        <p-dropdown [options]="transferList" [(ngModel)]="order.STATUS_TRANFER_NO" placeholder="เลือกการชำระเงิน" [showClear]="true" (onChange)="onchangeTransferBy($event)"></p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="lastname6">ตำบล อำเภอ จังหวัด รหัสไปรษณีย์  *</label>
+                                            <p-autoComplete [(ngModel)]="order.CUS_FULL_ADDRESS" [suggestions]="filteredAddress" 
+                                                (onSelect)="onSelectAddress($event)" placeholder="เลือกใส่ตำบล หรืออำเภอ ระบบจะเด้งอัติโนมัติ"
+                                                (completeMethod)="filterAddress($event)" field="FULL_ADDRESS" [minLength]="1"></p-autoComplete>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-6">
+                                        <label for="customer">
+                                            <p-checkbox  label="ยืนยันเก็บเงินปลายทาง" [(ngModel)]="order.FLAG_COD" binary="true" *ngIf="order.STATUS_TRANFER_NO =='COD'"></p-checkbox>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียดการจัดส่ง</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <!-- <button pButton pRipple label="เพิ่มการจัดส่ง" icon="pi pi-plus" iconPos="left"
+                                class="p-button-success p-mr-2" (click)="openNewTransport()"></button>  -->
+                                <div class="card">
+                                    <p-table [value]="orderTransport" styleClass="p-datatable-responsive-demo">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>บริการขนส่ง</th>
+                                                <th>วันที่ส่งสินค้า</th>
+                                                <th>หมายเลขแทร็คกิ้ง</th>
+                                                <th>ผู้ทำรายการ</th>
+                                                <th>วันที่ทำรายการ</th>
+                                                <th>ผู้ทำการอัพเดรท</th>
+                                                <th>วันที่ทำการอัพเดรท</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td>{{rowData.TRANSPORT_NAME}}</td>
+                                                <td>{{rowData.TRANSPORT_DATE != null ? (rowData.TRANSPORT_DATE.toDate() | date : 'dd/MM/yyyy HH:mm') : ''}}</td>
+                                                <td>{{rowData.TRACKING_NO}}</td>
+                                                <td>{{rowData.CREATE_BY}}</td>
+                                                <td>{{rowData.CREATE_DATE.toDate() | date : 'dd/MM/yyyy HH:mm'}}</td>
+                                                <td>{{rowData.UPDATE_BY}}</td>
+                                                <td>{{rowData.UPDATE_DATE.toDate() | date : 'dd/MM/yyyy HH:mm'}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div> 
+                            </div>
+                        </div>
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">รายละเอียดการชำระเงิน</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g">
+                            <div class="ui-g-12">
+                                <!-- <button pButton pRipple label="เพิ่มการชำระเงิน" icon="pi pi-plus" iconPos="left"
+                                class="p-button-success p-mr-2" (click)="openNewOrderPay()"></button>  -->
+                                <div class="card">
+                                    <p-table [value]="orderPay" styleClass="p-datatable-responsive-demo">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>การชำระเงิน</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'BANK'">หลักฐานการชำระเงิน</th>
+                                                <th>วันที่/เวลา</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'BANK'">เลขบัญชี</th>
+                                                <th>ยอดเงิน</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'COD'">ค่าบริการ COD</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'BANK'">ค่าธรรมเนียม</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'BANK'">REF.</th>
+                                                <th *ngIf="order.STATUS_TRANFER_NO == 'BANK'">หมายเหตุ</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'COD'">{{rowData.DELIVER_NAME}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.BANK_NAME}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.ATTACFILE_NAME}}</td>
+                                                <td>{{ rowData.PAY_DATE != null ? (rowData.PAY_DATE.toDate() | date : 'dd/MM/yyyy HH:mm') : ''}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.ACCOUNT_NO}}</td>
+                                                <td>{{rowData.AMOUNT}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'COD'">{{rowData.COD_SERVICE}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.FEE}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.REF}}</td>
+                                                <td *ngIf="order.STATUS_TRANFER_NO == 'BANK'">{{rowData.REMARK}}</td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </p-panel>
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">สั่งสินค้า</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <!-- <p-autoComplete [(ngModel)]="selectedProduct" [suggestions]="filteredproducts"  
+                                            (completeMethod)="filterProduct($event)" field="FULLNAME" 
+                                            (completeOnFocus)="true" (dropdown)="true" [minLength]="1"
+                                            (onSelect)="onSelectProduct($event)" placeholder="ค้นหาสินค้า">
+                                        </p-autoComplete> -->
+                                        <input id="nameSocial" type="text" pInputText placeholder="รหัสสินค้า" [(ngModel)]="sku"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <p-button label="เลือกสินค้า" icon="pi pi-shopping-cart" (click)="clickSearchProduct()"></p-button>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <div class="p-d-flex p-ai-right p-jc-between">
+                                            <p-checkbox label="Pre Order" [(ngModel)]="order.PRE_ORDER" binary="true"></p-checkbox>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- <div class="p-fluid p-formgrid p-grid">
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <input id="nameSocial" type="text" pInputText placeholder="บาร์โค๊ด" [(ngModel)]="sku"/>
+                                    </div>
+                                    <div class="p-field p-col-12 p-md-3">
+                                        <p-button label="เลือก" icon="pi pi-shopping-cart" (click)="clickSelectProduct()"></p-button></div>
+                                </div> -->
+                                <div class="p-fluid p-formgrid p-grid">
+                                    <br>
+                                    <p-table [value]="orderDetail">
+                                        <ng-template pTemplate="caption">
+                                            <div class="p-d-flex p-ai-center p-jc-between">
+                                                รายการสินค้า
+                                            </div>
+                                        </ng-template>
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th>รูป</th>
+                                                <th>รหัสสินค้า</th>
+                                                <th>ชื่อสินค้า</th>
+                                                <th>หมวดหมู่</th>
+                                                <th>ราคา</th>
+                                                <th>ส่วนลด %</th>
+                                                <th>ส่วนลด</th>
+                                                <th>จำนวน</th>
+                                                <th>หน่วย</th>
+                                                <th>ราคารวม</th>
+                                                <th>คนขาย</th>
+                                                <th>#</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-product let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td><img [src]="product.PRODUCT_IMG" [alt]="" height="100" width="100" class="p-shadow-4" /></td>
+                                                <td>{{product.PRODUCT_SKU}}</td>
+                                                <td>{{product.PRODUCT_NAME}}</td>
+                                                <td>{{product.PRODUCT_CATEGORY}}</td>
+                                                <td><p-inputNumber [(ngModel)]="product.PRICE" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber></td>
+                                                <td><p-inputNumber [(ngModel)]="product.DCPERCENT" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" suffix="%" (onBlur)="calculate()"></p-inputNumber></td>
+                                                <td><p-inputNumber [(ngModel)]="product.DCAMOUNT" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber></td>
+                                                <td><p-inputNumber [(ngModel)]="product.AMOUNT" (onBlur)="calculate()"></p-inputNumber></td>
+                                                <td><p-dropdown [options]="units" [(ngModel)]="product.UNIT" placeholder="เลือกหน่วย"></p-dropdown></td>
+                                                <td><p-inputNumber [(ngModel)]="product.TOTAL_PRICE" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber></td>
+                                                <td><p-dropdown [options]="usersList" [(ngModel)]="product.EMP_NO" placeholder="เลือกคนขาย" [showClear]="true"></p-dropdown></td>
+                                                <td><button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger" (click)="delDetail(rowIndex)"></button></td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="summary">
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><p-dropdown [options]="taxTypeList" [(ngModel)]="order.TYPE_TAX" placeholder="เลือกประเภทภาษี"  (onChange)="calculate()"></p-dropdown></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><p-inputNumber [(ngModel)]="order.VAT" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" *ngIf="vatFlag" (onBlur)="calculate()"></p-inputNumber></div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ภาษีมูลค่าเพิ่ม</label></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TAX}} บาท</div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ราคาจัดส่ง</label></div>
+                                                <div class="p-field p-col-12 p-md-3"><p-inputNumber [(ngModel)]="order.SHIPPING_COST" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber></div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ค่าบริการ COD</label></div>
+                                                <div class="p-field p-col-12 p-md-3"><p-inputNumber [(ngModel)]="order.COD" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber></div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">หมายเลขแทรกกิ้ง</label></div>
+                                                <div class="p-field p-col-12 p-md-3"><input id="tracking" type="text" pInputText  placeholder="หมายเลขแทรกกิ้ง" [(ngModel)]="order.TRACKING_NO"/></div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><p-dropdown [options]="statusDiscountList" [(ngModel)]="order.TYPE_DISCOUNT" placeholder="เลือกส่วนลด" (onChange)="calculate()"></p-dropdown></div>
+                                                <div class="p-field p-col-12 p-md-3">
+                                                    <p-inputNumber *ngIf="checkedDiscount" [(ngModel)]="order.DISCOUNT_AMOUNT" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()"></p-inputNumber>
+                                                    <p-inputNumber *ngIf="!checkedDiscount" [(ngModel)]="order.DISCOUNT_PERCENT" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="2" (onBlur)="calculate()" suffix="%"></p-inputNumber>
+                                                </div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ส่วนลด</label></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TOTAL_DC}}  บาท</div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right"><label for="asdf">ยอดรวม</label></div>
+                                                <div class="p-field p-col-12 p-md-3" style="text-align: right">{{order.TOTAL_ORDER}}  บาท</div>
+                                            </div>
+                                            <div class="p-fluid p-formgrid p-grid">
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-3"></div>
+                                                <div class="p-field p-col-12 p-md-6" style="text-align: right"><textarea rows="3" placeholder="หมายเหตุ" pInputTextarea [(ngModel)]="order.REMARK"></textarea></div>
+                                            </div>
+                                        </ng-template>
+                                    </p-table> 
+                                </div>
+                            </div>
+                        </div> 
+                    </p-panel>
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <p-button label="บันทึก" icon="pi pi-save" (click)="saveAndBack()"></p-button> &nbsp;&nbsp;
+                            <p-button label="บันทึกและสร้างใหม่" icon="pi pi-save" *ngIf="displaySavenew" (click)="saveAndNew()"></p-button> &nbsp;&nbsp;
+                            <p-button label="ยกเลิก" icon="pi pi-chevron-left" (click)="backToTable()"></p-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
+
+<!-- <p-dialog header="รายการสินค้า" [(visible)]="display" [modal]="true" [responsive]="true"
+    [style]="{width: '850px', minWidth: '650px'}" [minY]="500" [maximizable]="true" [baseZIndex]="500">
+    <p-table #dt [style]="{width:'100%'}" [columns]="colsProduct" [value]="products" [paginator]="true" [rows]="10"
+    [globalFilterFields]="['CATEGORY_NAME','PRODUCT_SKU','NAME','BRAND']"
+        selectionMode="single" [(selection)]="selectedProduct" (onRowSelect)="onRowSelect($event)">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="ค้นหา..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field"
+                    [ngStyle]="{width: col.field == 'name' ? '30%' : '120px'}">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field" ariaLabel="Activate to sort"
+                        ariaLabelDesc="Activate to sort in descending order"
+                        ariaLabelAsc="Activate to sort in ascending order"></p-sortIcon>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-columns="columns" let-contract>
+            <tr [pSelectableRow]="contract">
+                <td *ngFor="let col of columns">
+                    {{contract[col.field]}}
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog> -->
+
+<p-dialog header="รายการสินค้า" [(visible)]="display" [modal]="true" [responsive]="true"
+    [style]="{width: '850px', minWidth: '650px'}" [minY]="500" [maximizable]="true" [baseZIndex]="500">
+    <p-table #dt [style]="{width:'100%'}" [value]="products" [paginator]="true" [rows]="10"
+    [globalFilterFields]="['CATEGORY_NAME','PRODUCT_SKU','NAME','PRICE']"
+        selectionMode="single" [(selection)]="selectedProduct" (onRowSelect)="onRowSelect($event)">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <!-- <h5 class="p-m-0">Manage Products</h5> -->
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text"
+                        (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="ค้นหา..." />
+                </span>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <!-- รูป / รหัส / ชื่อ / Price / คงเหลือ -->
+                <th>รูป</th>
+                <th>หมวดหมู่</th>
+                <th>รหัส</th>
+                <th>ชื่อ</th>
+                <th>ราคา</th>
+                <th>คงเหลือ</th> 
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr [pSelectableRow]="product">
+                <td><img [src]="product.images.length > 0 ? product.images[0].ATTACFILE_URL : ''" [alt]="" height="100" width="100" class="p-shadow-4" /></td>
+                <td>{{product.CATEGORY_NAME}}</td>
+                <td>{{product.PRODUCT_SKU}}</td>
+                <td>{{product.NAME}}</td>
+                <td>{{product.PRICE}}</td>
+                <td>0</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-dialog>
+
+<p-dialog [(visible)]="fncDialogOrderPay" [style]="{width: '700px'}" header="การชำระเงิน" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">  
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'COD'">
+            <label for="cd">ขนส่งเก็บเงินปลายทาง</label>
+            <p-dropdown [options]="deleverList" [(ngModel)]="newRowOrderPay.DELIVER_CODE" placeholder="เลือกขนส่งสำหรับเก็บเงินปลายทาง" [showClear]="true"></p-dropdown>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'BANK'">
+            <label for="cd">ธนาคาร</label>
+            <p-dropdown [options]="bankList" [(ngModel)]="newRowOrderPay.BANK_CODE" placeholder="เลือกธนาคารสำหรับชำระเงิน" [showClear]="true"></p-dropdown>
+        </div>
+        <div class="p-field">
+            <label for="transxxferDate">วันที่ชำระงิน</label>
+            <p-calendar [(ngModel)]="transferDate" [showTime]="true" [showIcon]="true" dateFormat="dd/mm/yy"></p-calendar>
+        </div>
+        <div class="p-field">
+            <label for="amount">จำนวนเงิน</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.AMOUNT" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'COD'">
+            <label for="amount">ค่าบริการเก็บเงินปลายทาง</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.COD_SERVICE" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field">
+            <label for="amount">ค่าธรรมเนียม</label>
+            <p-inputNumber [(ngModel)]="newRowOrderPay.FEE" inputId="minmaxfraction" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5">
+            </p-inputNumber>
+        </div>
+        <div class="p-field" *ngIf="order.STATUS_TRANFER_NO == 'BANK'">
+            <label for="accountNo">เลขบัญชี</label>
+            <input type="text" pInputText id="accountNo" [(ngModel)]="newRowOrderPay.ACCOUNT_NO" />
+        </div>
+        <div class="p-field">
+            <label for="ref">Ref</label>
+            <input type="text" pInputText id="ref" [(ngModel)]="newRowOrderPay.REF" />
+        </div>
+        <div class="p-field">
+            <label for="remark">หมายเหตุ</label>
+            <input type="text" pInputText id="remark" [(ngModel)]="newRowOrderPay.REMARK" />
+        </div>
+        <div class="p-field">
+        <div class="p-field p-col-12 p-md-6">
+            <label for="nameSocial">เอกสารแนบ</label>
+            <p-fileUpload mode="basic" name="demo[]" accept="image/*" maxFileSize="1000000" (onSelect)="onUploadPay($event)"></p-fileUpload>
+        </div>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="ยกเลิก" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="บันทึก" icon="pi pi-check" class="p-button-text" (click)="addOrderPay()"></button>
+    </ng-template>
+</p-dialog>

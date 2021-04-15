@@ -1,0 +1,119 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN40001 : คำสังซื้อตีกลับ">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                <div class="ui-g-12">
+                                    <div class="ui-fluid p-formgrid p-grid">
+                                        <div class="p-field p-col-12 p-md-3">
+                                            <label for="dateFrom">วันที่ Order เริ่มต้น</label>
+                                            <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="orderDateFrom" (onSelect)="onSelectDate($event)"></p-calendar>
+                                        </div>
+                                        <div class="p-field p-col-12 p-md-3">
+                                            <label for="dateTo">วันที่ Order สิ้นสุด</label>
+                                            <p-calendar [showIcon]="true" dateFormat="dd/mm/yy" [(ngModel)]="orderDateTo" (onSelect)="onSelectDate($event)"></p-calendar>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <p-table [value]="dataTable" dataKey="ORDER_NO" [paginator]="true" [(selection)]="selectedRows"
+                            [rowsPerPageOptions]="[10,20,30]" [rows]="10"  
+                            currentPageReportTemplate="แสดง {first} ถึง {last} จากทั้งหมด {totalRecords} รายการ"
+                            [showCurrentPageReport]="true">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                        <th style="width: 3rem"></th>
+                                        <th>ทักษะการขาย</th>
+                                        <th>ช่องทาง</th>
+                                        <th>วันที่ออเดอร์</th>
+                                        <th>เลขที่ออเดอร์</th>
+                                        <th>ชื่อลูกค้า</th>
+                                        <th>สถานะ</th>
+                                        <th>การจ่ายเงิน</th>
+                                        <th>ขนส่ง</th>
+                                        <th>ราคารวม</th>
+                                        <th>จ่ายเงิน</th>
+                                        <th>คงเหลือ</th>
+                                        <th>วันที่ส่งสินค้า</th>
+                                        <th>ผู้ทำรายการ</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-order let-expanded="expanded">
+                                    <tr>
+                                        <td>
+                                            <button type="button" pButton pRipple [pRowToggler]="order" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                                        </td>
+                                        <td>{{order.SKILL_NAME}}</td>
+                                        <td>{{order.CHANNEL_NAME}}</td>
+                                        <td>{{order.ORDER_DATE_FMT}}</td>
+                                        <td>{{order.ORDER_NO}}0</td>
+                                        <td>{{order.CUS_NAME}}</td>
+                                        <td>{{order.STATUS_NAME}}</td>
+                                        <td>{{order.STATUS_TRANFER_NAME}}</td>
+                                        <td>{{order.TRANSPORT_NAME}}</td>
+                                        <td>{{order.TOTAL_ORDER}}</td>
+                                        <td>{{order.TOTAL_PAY}}</td>
+                                        <td>{{order.TOTAL_ORDER - order.TOTAL_PAY}}</td>
+                                        <td>{{order.TANSPORT_DATE_FMT}}</td>
+                                        <td>{{order.CREATE_BY}}</td>
+                                        
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="rowexpansion" let-order>
+                                    <tr>
+                                        <td colspan="14">
+                                            <div class="p-p-3">
+                                                <p-table [value]="order.ORDER_DETAILS" dataKey="ORDER_NO">
+                                                    <ng-template pTemplate="header">
+                                                        <tr>
+                                                            <th>รหัสสินค้า</th>
+                                                            <th>ชื่อสินค้า</th>
+                                                            <th>หมวดหมู่</th>
+                                                            <th>ราคา</th>
+                                                            <th>ส่วนลด</th>
+                                                            <th>จำนวน</th>
+                                                            <th>หน่วย</th>
+                                                            <th>ราคารวม</th>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="body" let-product>
+                                                        <tr>
+                                                            <td>{{product.PRODUCT_SKU}}</td>
+                                                            <td>{{product.PRODUCT_NAME}}</td>
+                                                            <td>{{product.PRODUCT_CATEGORY}}</td>
+                                                            <td>{{product.PRICE}}</td>
+                                                            <td>{{product.DCAMOUNT}}</td>
+                                                            <td>{{product.AMOUNT}}</td>
+                                                            <td>{{product.UNIT_NAME}}</td>
+                                                            <td>{{product.TOTAL_PRICE}}</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                    <ng-template pTemplate="emptymessage">
+                                                        <tr>
+                                                            <td colspan="14">There are no order for this product yet.</td>
+                                                        </tr>
+                                                    </ng-template>
+                                                </p-table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>

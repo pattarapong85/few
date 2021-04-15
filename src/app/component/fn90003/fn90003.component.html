@@ -1,0 +1,72 @@
+<div class="ui-g">
+    <div class="ui-g-12">
+        <p-panel header="FN90002 : หน้าจัดการสิทธิ์ผู้ใช้งาน">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p-panel>
+                        <p-header>
+                            <div class="ui-toolbar-group-left">
+                                <span class="ui-panel-title"
+                                    style="font-size:14px;display:inline-block;margin-top:2px">การจัดการ</span>
+                            </div>
+                        </p-header>
+                        <div class="card">
+                            <p-toolbar styleClass="p-mb-4">
+                                <ng-template pTemplate="left">
+                                    <button pButton pRipple label="กลับไปหน้าหลัก" icon="pi pi-chevron-left"
+                                        class="p-button-success p-mr-2" (click)="goBack()"></button>
+                                </ng-template>
+                            </p-toolbar>
+
+                            <p-table #dt [columns]="cols" [value]="dataTable" [paginator]="true"
+                                [globalFilterFields]="['ROLE_CD','ROLE_NAME']"
+                                [(selection)]="selectedRows" [rowHover]="true" dataKey="KEY" 
+                                [rowsPerPageOptions]="[100,120,130]" [rows]="100" 
+                                (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowUnselect($event)"
+                                currentPageReportTemplate="แสดง {first} ถึง {last} จากทั้งหมด {totalRecords} รายการ"
+                                [showCurrentPageReport]="true">
+                                <ng-template pTemplate="caption">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        <!-- <h5 class="p-m-0">Manage Products</h5> -->
+                                        <span class="p-input-icon-left">
+                                            <i class="pi pi-search"></i>
+                                            <input pInputText type="text"
+                                                (input)="dt.filterGlobal($event.target.value, 'contains')"
+                                                placeholder="ค้นหา..." />
+                                        </span>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="header" let-columns>
+                                    <tr>
+                                        <th style="width: 3rem">
+                                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                                        </th>
+                                        <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                            {{col.header}}
+                                            <p-sortIcon [field]="col.field"></p-sortIcon>
+                                        </th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                    <tr>
+                                        <td>
+                                            <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                                        </td>
+                                        <td *ngFor="let col of columns">
+                                            {{rowData[col.field]}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="summary">
+                                    <div class="p-d-flex p-ai-center p-jc-between">
+                                        จำนวน {{dataTable ? dataTable.length : 0 }} รายการ.
+                                    </div>
+                                </ng-template>
+                            </p-table>
+                        </div>
+                    </p-panel>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</div>
